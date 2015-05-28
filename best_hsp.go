@@ -64,10 +64,20 @@ func main() {
 		line = strings.TrimRight(line, "\r\n")
 
 		fields := strings.Split(line, "\t")
-		evalue, _ := strconv.ParseFloat(fields[10], 64)
-		bit_score, _ := strconv.ParseFloat(fields[11], 64)
 
 		if query != fields[0] {
+			evalue, err := strconv.ParseFloat(strings.Trim(fields[10], " "), 64)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "fail to parse evalue (%s) of %s\n", fields[10], fields[0])
+				os.Exit(1)
+			}
+			bit_score, err := strconv.ParseFloat(strings.Trim(fields[11], " "), 64)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "fail to parse bit_score (%s) of %s\n", fields[11], fields[0])
+				os.Exit(1)
+			}
+
+			// fmt.Println(fields[0], max_evalue, min_bit_score, evalue, bit_score)
 			if evalue <= max_evalue && bit_score >= min_bit_score {
 				fmt.Println(line)
 			}
